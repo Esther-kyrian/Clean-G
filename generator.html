@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>G-clean - Générateur de CV</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #6a11cb;
+            --secondary-color: #2575fc;
+            --accent-color: #20b2aa;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            color: #333;
+            padding-bottom: 20px;
+        }
+
+        /* Navigation améliorée */
+        .navbar {
+            background-color: rgba(255, 255, 255, 0.98);
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            padding: 12px 0;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--secondary-color);
+        }
+        
+        .logo i {
+            color: var(--primary-color);
+        }
+        
+        .nav-link {
+            font-weight: 500;
+            transition: all 0.3s;
+            padding: 8px 15px !important;
+            border-radius: 8px;
+            margin: 0 3px;
+            position: relative;
+        }
+        
+        .nav-link:hover {
+            color: var(--secondary-color);
+            background-color: rgba(37, 117, 252, 0.1);
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: var(--secondary-color);
+            transition: all 0.3s;
+            transform: translateX(-50%);
+        }
+        
+        .nav-link:hover::after {
+            width: 70%;
+        }
+        
+        .navbar-toggler {
+            border: none;
+            padding: 4px 8px;
+        }
+        
+        .navbar-toggler:focus {
+            box-shadow: none;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        /* Main Container */
+        .main-container {
+            animation: fadeInUp 1s ease-out;
+            margin-top: 2rem;
+        }
+
+        .form-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .form-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .section-title {
+            color: var(--secondary-color);
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border-bottom: 2px solid var(--light-color);
+            padding-bottom: 10px;
+        }
+
+        .section-title i {
+            color: var(--primary-color);
+            animation: pulse 2s infinite;
+        }
+
+        /* Form Styles */
+        .form-control, .form-select {
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 0.75rem 1rem;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            background: var(--light-color);
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(106, 17, 203, 0.25);
+            background: white;
+            transform: scale(1.02);
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--dark-color);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Buttons */
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            border: none;
+            border-radius: 12px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(79, 70, 229, 0.4);
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--accent-color) 0%, #1a9189 100%);
+            border: none;
+            border-radius: 12px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        /* Photo Upload */
+        .photo-upload {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            border: 3px dashed var(--primary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: var(--light-color);
+            margin: 0 auto 1rem;
+        }
+
+        .photo-upload:hover {
+            border-color: var(--accent-color);
+            transform: scale(1.05);
+            background: white;
+        }
+
+        .photo-preview {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            display: none;
+        }
+
+        /* CV Preview */
+        .cv-preview {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            min-height: 600px;
+            position: sticky;
+            top: 120px;
+            animation: fadeInUp 1s ease-out 0.3s both;
+        }
+
+        .cv-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid var(--light-color);
+        }
+
+        .cv-photo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            margin: 0 auto 1rem;
+            object-fit: cover;
+            border: 4px solid var(--primary-color);
+            display: none;
+        }
+
+        .cv-name {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--dark-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .cv-title {
+            font-size: 1.2rem;
+            color: var(--secondary-color);
+            margin-bottom: 1rem;
+        }
+
+        .cv-contact {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            color: #6c757d;
+        }
+
+        .cv-contact span {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .cv-section {
+            margin-bottom: 2rem;
+        }
+
+        .cv-section h3 {
+            color: var(--primary-color);
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--light-color);
+        }
+
+        .experience-item, .education-item {
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: var(--light-color);
+            border-radius: 12px;
+            border-left: 4px solid var(--primary-color);
+            transition: all 0.3s ease;
+        }
+
+        .experience-item:hover, .education-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .skills-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .skill-tag {
+            background: var(--primary-color);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        /* Dynamic List Items */
+        .list-item {
+            background: var(--light-color);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--accent-color);
+            animation: slideInLeft 0.5s ease-out;
+            position: relative;
+        }
+
+        .remove-btn {
+            color: #dc2626;
+            cursor: pointer;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .remove-btn:hover {
+            color: #991b1b;
+            transform: scale(1.2);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .cv-contact {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .form-container, .cv-preview {
+                margin-bottom: 1rem;
+            }
+            
+            .cv-preview {
+                position: static;
+            }
+            
+            .navbar-collapse {
+                background-color: white;
+                padding: 15px;
+                border-radius: 8px;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+                margin-top: 10px;
+            }
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .spinner {
+            border: 4px solid #f3f4f6;
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* User menu */
+        .user-menu {
+            display: flex;
+            align-items: center;
+        }
+                .navbar {
+            background-color: rgba(255, 255, 255, 0.98);
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            padding: 12px 0;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--secondary-color);
+        }
+        
+        .logo i {
+            color: var(--primary-color);
+        }
+        
+        .nav-link {
+            font-weight: 500;
+            transition: all 0.3s;
+            padding: 8px 15px !important;
+            border-radius: 8px;
+            margin: 0 3px;
+            position: relative;
+        }
+        
+        .nav-link:hover {
+            color: var(--secondary-color);
+            background-color: rgba(37, 117, 252, 0.1);
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: var(--secondary-color);
+            transition: all 0.3s;
+            transform: translateX(-50%);
+        }
+        
+        .nav-link:hover::after {
+            width: 70%;
+        }
+        
+        .navbar-toggler {
+            border: none;
+            padding: 4px 8px;
+        }
+        
+        .navbar-toggler:focus {
+            box-shadow: none;
+        }
+        
+    </style>
+</head>
+<body>
+    
+    <!-- Notification -->
+    <div class="notification" id="notification" style="display: none;"></div>
+    
+    <!-- Navigation améliorée -->
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand logo" href="#" onclick="showSection('home')">
+                <i class="fas fa-cut"></i>
+                <span>G-clean</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">
+                            <i class="fas fa-home me-1"></i> Accueil
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="generator.html">
+                            <i class="fas fa-file-alt me-1"></i> Générateur de CV
+                        </a>
+                    </li>
+                 
+                     <li class="nav-item">
+                        <a class="nav-link" href="compresseur.html">
+                            <i class="fas fa-compress-alt me-1"></i> Compresseur
+                        </a>
+                    </li>
+                     <li class="nav-item">
+                        <a class="nav-link" href="generateur-logo.html">
+                            <i class="fas fa-paint-brush me-1"></i> Générateur de Logo
+                        </a>
+                    </li>
+                </ul>
+             
+            </div>
+        </div>
+    </nav>
+
+    <div class="container main-container">
+        <div class="row">
+            <!-- Form Column -->
+            <div class="col-lg-6">
+                <!-- Personal Information -->
+                <div class="form-container">
+                    <h2 class="section-title">
+                        <i class="fas fa-user"></i>
+                        Informations personnelles
+                    </h2>
+                    
+                    <div class="row mb-3">
+                        <div class="col-12 text-center">
+                            <div class="photo-upload" onclick="document.getElementById('photoInput').click()">
+                                <img id="photoPreview" class="photo-preview" alt="Photo">
+                                <div id="photoPlaceholder">
+                                    <i class="fas fa-camera fa-2x text-muted"></i>
+                                    <div class="mt-2 text-muted">Ajouter une photo</div>
+                                </div>
+                            </div>
+                            <input type="file" id="photoInput" style="display: none;" accept="image/*">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Prénom</label>
+                            <input type="text" class="form-control" id="firstName" placeholder="Votre prénom">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Nom</label>
+                            <input type="text" class="form-control" id="lastName" placeholder="Votre nom">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Titre professionnel</label>
+                        <input type="text" class="form-control" id="jobTitle" placeholder="Ex: Développeur Web">
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" placeholder="votre@email.com">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Téléphone</label>
+                            <input type="tel" class="form-control" id="phone" placeholder="+33 1 23 45 67 89">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Adresse</label>
+                        <textarea class="form-control" id="address" rows="2" placeholder="Votre adresse complète"></textarea>
+                    </div>
+                </div>
+
+                <!-- Experience -->
+                <div class="form-container">
+                    <h2 class="section-title">
+                        <i class="fas fa-briefcase"></i>
+                        Expérience professionnelle
+                    </h2>
+                    
+                    <div id="experienceList"></div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Poste</label>
+                            <input type="text" class="form-control" id="expTitle" placeholder="Titre du poste">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Entreprise</label>
+                            <input type="text" class="form-control" id="expCompany" placeholder="Nom de l'entreprise">
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Date de début</label>
+                            <input type="month" class="form-control" id="expStartDate">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Date de fin</label>
+                            <input type="month" class="form-control" id="expEndDate">
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Description</label>
+                        <textarea class="form-control" id="expDescription" rows="3" placeholder="Décrivez vos missions et réalisations"></textarea>
+                    </div>
+                    
+                    <button type="button" class="btn btn-primary w-100" onclick="addExperience()">
+                        <i class="fas fa-plus"></i> Ajouter l'expérience
+                    </button>
+                </div>
+
+                <!-- Education -->
+                <div class="form-container">
+                    <h2 class="section-title">
+                        <i class="fas fa-graduation-cap"></i>
+                        Formation
+                    </h2>
+                    
+                    <div id="educationList"></div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Diplôme</label>
+                            <input type="text" class="form-control" id="eduDegree" placeholder="Nom du diplôme">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">École/Université</label>
+                            <input type="text" class="form-control" id="eduSchool" placeholder="Nom de l'établissement">
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Année d'obtention</label>
+                            <input type="number" class="form-control" id="eduYear" placeholder="2023" min="1900" max="2100">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Lieu</label>
+                            <input type="text" class="form-control" id="eduLocation" placeholder="Ville, Pays">
+                        </div>
+                    </div>
+                    
+                    <button type="button" class="btn btn-primary w-100" onclick="addEducation()">
+                        <i class="fas fa-plus"></i> Ajouter la formation
+                    </button>
+                </div>
+
+                <!-- Skills -->
+                <div class="form-container">
+                    <h2 class="section-title">
+                        <i class="fas fa-cogs"></i>
+                        Compétences
+                    </h2>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Ajouter une compétence</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="skillInput" placeholder="Ex: JavaScript, Management, etc.">
+                            <button class="btn btn-primary" onclick="addSkill()">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div id="skillsList" class="skills-list"></div>
+                </div>
+
+                <!-- Generate Button -->
+                <div class="text-center mb-4">
+                    <button class="btn btn-success btn-lg w-100 py-3" onclick="generatePDF()">
+                        <i class="fas fa-download"></i> Télécharger le CV en PDF
+                    </button>
+                </div>
+            </div>
+
+            <!-- CV Preview Column -->
+            <div class="col-lg-6">
+                <div class="cv-preview">
+                    <div class="loading" id="loading">
+                        <div class="spinner"></div>
+                        <p>Génération du CV en cours...</p>
+                    </div>
+
+                    <div class="cv-header">
+                        <img id="cvPhoto" class="cv-photo" alt="Photo">
+                        <h1 class="cv-name" id="cvName">Votre Nom</h1>
+                        <p class="cv-title" id="cvJobTitle">Votre Titre Professionnel</p>
+                        <div class="cv-contact">
+                            <span id="cvEmail"><i class="fas fa-envelope"></i> email@exemple.com</span>
+                            <span id="cvPhone"><i class="fas fa-phone"></i> Téléphone</span>
+                            <span id="cvAddress"><i class="fas fa-map-marker-alt"></i> Adresse</span>
+                        </div>
+                    </div>
+
+                    <div class="cv-section" id="cvExperienceSection">
+                        <h3>Expérience Professionnelle</h3>
+                        <div id="cvExperience">
+                            <p class="text-muted">Aucune expérience ajoutée</p>
+                        </div>
+                    </div>
+
+                    <div class="cv-section" id="cvEducationSection">
+                        <h3>Formation</h3>
+                        <div id="cvEducation">
+                            <p class="text-muted">Aucune formation ajoutée</p>
+                        </div>
+                    </div>
+
+                    <div class="cv-section" id="cvSkillsSection">
+                        <h3>Compétences</h3>
+                        <div id="cvSkills" class="skills-list">
+                            <p class="text-muted">Aucune compétence ajoutée</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="text-center text-white mt-5 py-3">
+        <p>© 2025 Gis Community System - Tous droits réservés</p>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Global variables
+        let experiences = [];
+        let educations = [];
+        let skills = [];
+
+        // Photo upload handling
+        document.getElementById('photoInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('photoPreview').src = e.target.result;
+                    document.getElementById('photoPreview').style.display = 'block';
+                    document.getElementById('photoPlaceholder').style.display = 'none';
+                    
+                    document.getElementById('cvPhoto').src = e.target.result;
+                    document.getElementById('cvPhoto').style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Real-time updates
+        function setupRealTimeUpdates() {
+            const inputs = {
+                'firstName': updateName,
+                'lastName': updateName,
+                'jobTitle': () => document.getElementById('cvJobTitle').textContent = document.getElementById('jobTitle').value || 'Votre Titre Professionnel',
+                'email': () => document.getElementById('cvEmail').innerHTML = `<i class="fas fa-envelope"></i> ${document.getElementById('email').value || 'email@exemple.com'}`,
+                'phone': () => document.getElementById('cvPhone').innerHTML = `<i class="fas fa-phone"></i> ${document.getElementById('phone').value || 'Téléphone'}`,
+                'address': () => document.getElementById('cvAddress').innerHTML = `<i class="fas fa-map-marker-alt"></i> ${document.getElementById('address').value || 'Adresse'}`
+            };
+
+            Object.keys(inputs).forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.addEventListener('input', inputs[id]);
+                }
+            });
+        }
+
+        function updateName() {
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+            document.getElementById('cvName').textContent = `${firstName} ${lastName}`.trim() || 'Votre Nom';
+        }
+
+        // Add experience
+        function addExperience() {
+            const title = document.getElementById('expTitle').value;
+            const company = document.getElementById('expCompany').value;
+            const startDate = document.getElementById('expStartDate').value;
+            const endDate = document.getElementById('expEndDate').value;
+            const description = document.getElementById('expDescription').value;
+
+            if (!title || !company) {
+                showNotification('Veuillez remplir au minimum le titre du poste et l\'entreprise', true);
+                return;
+            }
+
+            const experience = {
+                title, company, startDate, endDate, description
+            };
+
+            experiences.push(experience);
+            updateExperienceList();
+            updateCVExperience();
+            clearExperienceForm();
+            showNotification('Expérience ajoutée avec succès!', false);
+        }
+
+        function updateExperienceList() {
+            const list = document.getElementById('experienceList');
+            list.innerHTML = experiences.map((exp, index) => `
+                <div class="list-item">
+                    <span class="remove-btn" onclick="removeExperience(${index})">&times;</span>
+                    <h6>${exp.title} - ${exp.company}</h6>
+                    <small class="text-muted">${formatDate(exp.startDate)} - ${formatDate(exp.endDate) || 'Présent'}</small>
+                    ${exp.description ? `<p class="mt-2 mb-0">${exp.description}</p>` : ''}
+                </div>
+            `).join('');
+        }
+
+        function updateCVExperience() {
+            const cvExp = document.getElementById('cvExperience');
+            if (experiences.length === 0) {
+                cvExp.innerHTML = '<p class="text-muted">Aucune expérience ajoutée</p>';
+            } else {
+                cvExp.innerHTML = experiences.map(exp => `
+                    <div class="experience-item">
+                        <h5>${exp.title}</h5>
+                        <h6 class="text-primary">${exp.company}</h6>
+                        <p class="text-muted mb-2">${formatDate(exp.startDate)} - ${formatDate(exp.endDate) || 'Présent'}</p>
+                        ${exp.description ? `<p>${exp.description}</p>` : ''}
+                    </div>
+                `).join('');
+            }
+        }
+
+        function removeExperience(index) {
+            experiences.splice(index, 1);
+            updateExperienceList();
+            updateCVExperience();
+            showNotification('Expérience supprimée', false);
+        }
+
+        function clearExperienceForm() {
+            ['expTitle', 'expCompany', 'expStartDate', 'expEndDate', 'expDescription'].forEach(id => {
+                document.getElementById(id).value = '';
+            });
+        }
+
+        // Add education
+        function addEducation() {
+            const degree = document.getElementById('eduDegree').value;
+            const school = document.getElementById('eduSchool').value;
+            const year = document.getElementById('eduYear').value;
+            const location = document.getElementById('eduLocation').value;
+
+            if (!degree || !school) {
+                showNotification('Veuillez remplir au minimum le diplôme et l\'établissement', true);
+                return;
+            }
+
+            const education = { degree, school, year, location };
+            educations.push(education);
+            updateEducationList();
+            updateCVEducation();
+            clearEducationForm();
+            showNotification('Formation ajoutée avec succès!', false);
+        }
+
+        function updateEducationList() {
+            const list = document.getElementById('educationList');
+            list.innerHTML = educations.map((edu, index) => `
+                <div class="list-item">
+                    <span class="remove-btn" onclick="removeEducation(${index})">&times;</span>
+                    <h6>${edu.degree}</h6>
+                    <small class="text-muted">${edu.school} ${edu.year ? `- ${edu.year}` : ''}</small>
+                    ${edu.location ? `<p class="mt-2 mb-0">${edu.location}</p>` : ''}
+                </div>
+            `).join('');
+        }
+
+        function updateCVEducation() {
+            const cvEdu = document.getElementById('cvEducation');
+            if (educations.length === 0) {
+                cvEdu.innerHTML = '<p class="text-muted">Aucune formation ajoutée</p>';
+            } else {
+                cvEdu.innerHTML = educations.map(edu => `
+                    <div class="education-item">
+                        <h5>${edu.degree}</h5>
+                        <h6 class="text-primary">${edu.school}</h6>
+                        <p class="text-muted mb-0">
+                            ${edu.year || ''} ${edu.location ? `- ${edu.location}` : ''}
+                        </p>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function removeEducation(index) {
+            educations.splice(index, 1);
+            updateEducationList();
+            updateCVEducation();
+            showNotification('Formation supprimée', false);
+        }
+
+        function clearEducationForm() {
+            ['eduDegree', 'eduSchool', 'eduYear', 'eduLocation'].forEach(id => {
+                document.getElementById(id).value = '';
+            });
+        }
+
+        // Add skill
+        function addSkill() {
+            const skillInput = document.getElementById('skillInput');
+            const skill = skillInput.value.trim();
+
+            if (!skill) {
+                showNotification('Veuillez entrer une compétence', true);
+                return;
+            }
+            
+            if (skills.includes(skill)) {
+                showNotification('Cette compétence a déjà été ajoutée', true);
+                return;
+            }
+
+            skills.push(skill);
+            updateSkillsList();
+            updateCVSkills();
+            skillInput.value = '';
+            showNotification('Compétence ajoutée avec succès!', false);
+        }
+
+        function updateSkillsList() {
+            const list = document.getElementById('skillsList');
+            list.innerHTML = skills.map((skill, index) => `
+                <span class="skill-tag">
+                    ${skill}
+                    <i class="fas fa-times ms-2" onclick="removeSkill(${index})" style="cursor: pointer;"></i>
+                </span>
+            `).join('');
+        }
+
+        function updateCVSkills() {
+            const cvSkills = document.getElementById('cvSkills');
+            if (skills.length === 0) {
+                cvSkills.innerHTML = '<p class="text-muted">Aucune compétence ajoutée</p>';
+            } else {
+                cvSkills.innerHTML = skills.map(skill => `
+                    <span class="skill-tag">${skill}</span>
+                `).join('');
+            }
+        }
+
+        function removeSkill(index) {
+            skills.splice(index, 1);
+            updateSkillsList();
+            updateCVSkills();
+            showNotification('Compétence supprimée', false);
+        }
+
+        // Utility functions
+        function formatDate(dateStr) {
+            if (!dateStr) return '';
+            const [year, month] = dateStr.split('-');
+            const date = new Date(year, month - 1);
+            const options = { year: 'numeric', month: 'long' };
+            return date.toLocaleDateString('fr-FR', options);
+        }
+        
+        // PDF Generation
+        function generatePDF() {
+            // Validate required fields
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+            
+            if (!firstName || !lastName) {
+                showNotification('Veuillez remplir au moins votre prénom et nom', true);
+                return;
+            }
+            
+            const element = document.querySelector('.cv-preview');
+            
+            // Show loading spinner
+            const loadingSpinner = document.getElementById('loading');
+            loadingSpinner.style.display = 'block';
+
+            const options = {
+                margin: [10, 10, 10, 10],
+                filename: `CV_${firstName}_${lastName}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, logging: true },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            html2pdf().set(options).from(element).save().then(() => {
+                // Hide loading spinner after download
+                loadingSpinner.style.display = 'none';
+                showNotification('CV téléchargé avec succès!', false);
+            }).catch(err => {
+                loadingSpinner.style.display = 'none';
+                showNotification('Erreur lors du téléchargement du CV', true);
+                console.error('PDF generation error:', err);
+            });
+        }
+
+        // Notification function
+        function showNotification(message, isError) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = isError ? 'notification error' : 'notification';
+            notification.style.display = 'block';
+            
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', () => {
+            setupRealTimeUpdates();
+            
+            // Set current year for education field
+            document.getElementById('eduYear').value = new Date().getFullYear();
+        });
+    </script>
+</body>
+</html>

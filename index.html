@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>G-clean</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #6a11cb;
+            --secondary-color: #2575fc;
+            --accent-color: #20b2aa;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: #333;
+            min-height: 100vh;
+            padding-bottom: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .navbar {
+            background-color: rgba(255, 255, 255, 0.98);
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            padding: 12px 0;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--secondary-color);
+        }
+        
+        .logo i {
+            color: var(--primary-color);
+        }
+        
+        .nav-link {
+            font-weight: 500;
+            transition: all 0.3s;
+            padding: 8px 15px !important;
+            border-radius: 8px;
+            margin: 0 3px;
+            position: relative;
+        }
+        
+        .nav-link:hover {
+            color: var(--secondary-color);
+            background-color: rgba(37, 117, 252, 0.1);
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: var(--secondary-color);
+            transition: all 0.3s;
+            transform: translateX(-50%);
+        }
+        
+        .nav-link:hover::after {
+            width: 70%;
+        }
+        
+        .navbar-toggler {
+            border: none;
+            padding: 4px 8px;
+        }
+        
+        .navbar-toggler:focus {
+            box-shadow: none;
+        }
+        
+        .section {
+            display: none;
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        
+        .active-section {
+            display: block;
+        }
+        
+        .upload-container {
+            border: 2px dashed #ccc;
+            border-radius: 10px;
+            padding: 25px;
+            text-align: center;
+            margin: 20px 0;
+            background: rgba(255, 255, 255, 0.7);
+            transition: all 0.3s;
+        }
+        
+        .upload-container:hover {
+            border-color: var(--secondary-color);
+            background: rgba(255, 255, 255, 0.9);
+        }
+        
+        .upload-container i {
+            font-size: 3rem;
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+        }
+        
+        .upload-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+            margin-top: 5px;
+            border: none;
+        }
+        
+        .upload-btn:hover {
+            background: #5809b5;
+        }
+        
+        .image-placeholder {
+            width: 100%;
+            height: 250px;
+            border: 1px dashed #ddd;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background: #f9f9f9;
+        }
+        
+        .image-placeholder img,
+        .image-placeholder canvas {
+            max-width: 100%;
+            max-height: 100%;
+        }
+        
+        .tool-btn {
+            padding: 6px 12px;
+            background: #f0f0f0;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .tool-btn:hover {
+            background: var(--secondary-color);
+            color: white;
+        }
+        
+        .bg-option {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: all 0.3s;
+            display: inline-block;
+        }
+        
+        .bg-option:hover, .bg-option.active {
+            transform: scale(1.1);
+            border-color: var(--secondary-color);
+        }
+        
+        .notification {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            padding: 10px 20px;
+            background: #4CAF50;
+            color: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            display: none;
+            z-index: 1000;
+        }
+        
+        .notification.error {
+            background: #f44336;
+        }
+        
+        .cv-preview {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            min-height: 500px;
+        }
+        
+        .cv-header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--secondary-color);
+        }
+        
+        .cv-photo {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto 15px;
+            border: 3px solid var(--secondary-color);
+        }
+        
+        .cv-section {
+            margin-bottom: 20px;
+        }
+        
+        .cv-section-title {
+            color: var(--secondary-color);
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+            margin-bottom: 10px;
+        }
+        
+        .theme-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .theme-btn {
+            padding: 8px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .theme-btn:hover, .theme-btn.active {
+            background: var(--secondary-color);
+            color: white;
+            border-color: var(--secondary-color);
+        }
+        
+        .spinner {
+            border: 3px solid rgba(0, 0, 0, 0.1);
+            border-left: 3px solid var(--secondary-color);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Styles responsives */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 15px;
+            }
+            
+            .tools {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .tool-btn {
+                width: 150px;
+                justify-content: center;
+            }
+            
+            .navbar-collapse {
+                background-color: white;
+                padding: 15px;
+                border-radius: 8px;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+                margin-top: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="notification" id="notification"></div>
+    
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand logo" href="#" onclick="showSection('home')">
+                <i class="fas fa-cut"></i>
+                <span>G-clean</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html" onclick="showSection('home')">
+                            <i class="fas fa-home me-1"></i> Accueil
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="generator.html" onclick="showSection('cv-generator')">
+                            <i class="fas fa-file-alt me-1"></i> Générateur de CV
+                        </a>
+                    </li>
+                  
+                     <li class="nav-item">
+                        <a class="nav-link" href="compresseur.html" onclick="showSection('compressor')">
+                            <i class="fas fa-compress-alt me-1"></i> Compresseur d'images
+                        </a>
+                    </li>
+                     <li class="nav-item">
+                        <a class="nav-link" href="generateur-logo.html" onclick="showSection('logo-generator')">
+                            <i class="fas fa-paint-brush me-1"></i> Générateur de Logo
+                        </a>
+                    </li>
+                </ul>
+              
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Section d'accueil -->
+        <div id="homeSection" class="section active-section">
+            <div class="text-center mb-4">
+                <h1>Éditeur d'images </h1>
+                <p class="lead">Notre éditeur IA avancé vous permet de supprimer l'arrière-plan de vos images et d'appliquer de nombreux effets créatifs.
+                </p>
+            </div>
+            
+            <div class="upload-container" id="uploadContainer">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <h2>Télécharger l'image</h2>
+                <p>ou déposer un fichier, coller une image ou une URL</p>
+                
+                <div class="upload-options">
+                    <label for="fileInput" class="upload-btn">
+                        <i class="fas fa-upload"></i> Choisir un fichier
+                    </label>
+                    <input type="file" id="fileInput" accept="image/*" style="display: none;">
+                    
+                    <button class="upload-btn" id="pasteBtn">
+                        <i class="fas fa-paste"></i> Coller depuis le presse-papier
+                    </button>
+                    
+                    <button class="upload-btn" id="urlBtn">
+                        <i class="fas fa-link"></i> Importer depuis une URL
+                    </button>
+                </div>
+                
+                <div class="url-input-container mt-3" id="urlInputContainer" style="display: none;">
+                    <input type="text" class="form-control d-inline-block w-auto" id="imageUrl" placeholder="Collez l'URL de l'image ici">
+                    <button class="upload-btn" id="loadUrlBtn">Charger</button>
+                </div>
+            </div>
+            
+            <div class="loading text-center my-3" id="loading" style="display: none;">
+                <div class="spinner"></div>
+                <p>Traitement de votre image en cours...</p>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-bolt fa-2x mb-3 text-primary"></i>
+                            <h5 class="card-title">Rapide et efficace</h5>
+                            <p class="card-text">Notre algorithme traite vos images en quelques secondes avec une précision exceptionnelle.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-layer-group fa-2x mb-3 text-primary"></i>
+                            <h5 class="card-title">Arrière-plans multiples</h5>
+                            <p class="card-text">Choisissez parmi différents arrière-plans ou téléchargez le vôtre pour personnaliser vos images.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-magic fa-2x mb-3 text-primary"></i>
+                            <h5 class="card-title">Édition avancée</h5>
+                            <p class="card-text">Ajustez la luminosité, le contraste et appliquez des filtres créatifs à vos images.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="results mt-4" id="resultsSection" style="display: none;">
+                <h2 class="text-center mb-4">Résultat du traitement</h2>
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <div class="card">
+                            <div class="card-header text-center">
+                                <h5>Image originale</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="image-placeholder" id="originalImage">
+                                    <span>Aperçu de l'image originale</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <div class="card">
+                            <div class="card-header text-center">
+                                <h5>Image traitée</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="image-placeholder" id="processedImage">
+                                    <span>Résultat après traitement</span>
+                                    <canvas id="imageCanvas" style="display: none;"></canvas>
+                                </div>
+                                
+                                <div class="background-options mt-3 p-3 bg-light rounded" id="backgroundOptions" style="display: none;">
+                                    <h6>Changer l'arrière-plan:</h6>
+                                    <div class="d-flex flex-wrap gap-2 mb-2">
+                                        <div class="bg-option" style="background: white;" data-color="white" title="Blanc"></div>
+                                        <div class="bg-option" style="background: black;" data-color="black" title="Noir"></div>
+                                        <div class="bg-option" style="background: transparent; border: 1px dashed #ccc;" data-color="transparent" title="Transparent"></div>
+                                        <div class="bg-option" style="background: linear-gradient(45deg, #ff9a9e, #fad0c4);" data-gradient="45deg, #ff9a9e, #fad0c4" title="Dégradé 1"></div>
+                                        <div class="bg-option" style="background: linear-gradient(45deg, #a1c4fd, #c2e9fb);" data-gradient="45deg, #a1c4fd, #c2e9fb" title="Dégradé 2"></div>
+                                        <div class="bg-option" style="background: #20b2aa;" data-color="#20b2aa" title="Turquoise"></div>
+                                        <div class="bg-option" style="background: #f4a460;" data-color="#f4a460" title="Corail"></div>
+                                    </div>
+                                    <div class="color-picker-container">
+                                        <input type="color" id="colorPicker" class="form-control form-control-color d-inline-block w-auto">
+                                        <label for="customBg" class="upload-btn">
+                                            <i class="fas fa-image"></i> Image personnalisée
+                                        </label>
+                                        <input type="file" id="customBg" accept="image/*" style="display: none;">
+                                    </div>
+                                </div>
+                                
+                                <div class="edit-options mt-3 p-3 bg-light rounded" id="editOptions" style="display: none;">
+                                    <h6>Transformations & Ajustements</h6>
+                                    <div class="mb-2">
+                                        <label class="form-label">Zoom:</label>
+                                        <input type="range" class="form-range" id="zoom" min="50" max="200" value="100">
+                                    </div>
+                                    <div class="mb-2">
+                                        <label class="form-label">Luminosité:</label>
+                                        <input type="range" class="form-range" id="brightness" min="0" max="200" value="100">
+                                    </div>
+                                    <div class="mb-2">
+                                        <label class="form-label">Contraste:</label>
+                                        <input type="range" class="form-range" id="contrast" min="0" max="200" value="100">
+                                    </div>
+                                    <div class="mb-2">
+                                        <label class="form-label">Saturation:</label>
+                                        <input type="range" class="form-range" id="saturation" min="0" max="200" value="100">
+                                    </div>
+                                </div>
+                                
+                                <div class="tools d-flex flex-wrap gap-2 justify-content-center mt-3">
+                                    <button class="tool-btn" id="changeBgBtn"><i class="fas fa-plus"></i> Arrière-plan</button>
+                                    <button class="tool-btn" id="editBtn"><i class="fas fa-magic"></i> Éditer</button>
+                                    <button class="tool-btn" id="rotateLeftBtn"><i class="fas fa-undo"></i> Gauche</button>
+                                    <button class="tool-btn" id="rotateRightBtn"><i class="fas fa-redo"></i> Droite</button>
+                                </div>
+                            </div>
+                            <div class="card-footer text-center">
+                                <button class="btn btn-primary me-2" id="finalDownloadBtn"><i class="fas fa-download"></i> Télécharger</button>
+                                <button class="btn btn-success" id="saveToAccountBtn"><i class="fas fa-save"></i> Sauvegarder</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section Générateur de CV -->
+        <div id="cv-generator" class="section">
+            <h2 class="text-center mb-4">Générateur de CV</h2>
+            
+            <div class="theme-selector mb-4">
+                <h6>Choisissez un thème:</h6>
+                <button class="theme-btn active" data-theme="classic">Classique</button>
+                <button class="theme-btn" data-theme="modern">Moderne</button>
+                <button class="theme-btn" data-theme="creative">Créatif</button>
+            </div>
+            
+            <div class="row">
+                <div class="col-lg-5">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5>Informations personnelles</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label class="form-label">Photo de profil</label>
+                                <input type="file" class="form-control" id="cvPhoto" accept="image/*">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Nom complet</label>
+                                <input type="text" class="form-control" id="cvName">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Titre professionnel</label>
+                                <input type="text" class="form-control" id="cvTitle">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Email</label>
+                                <input type="email" class="form-control" id="cvEmail">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Téléphone</label>
+                                <input type="tel" class="form-control" id="cvPhone">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Adresse</label>
+                                <textarea class="form-control" id="cvAddress" rows="2"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5>Compétences</h5>
+                        </div>
+                        <div class="card-body">
+                            <div id="skills-container">
+                                <div class="skill-item mb-2">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" placeholder="Compétence">
+                                        <input type="number" class="form-control" placeholder="Niveau (0-100)" min="0" max="100">
+                                        <button class="btn btn-danger remove-skill"><i class="fas fa-times"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="btn btn-sm btn-primary mt-2" id="add-skill"><i class="fas fa-plus"></i> Ajouter une compétence</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-7">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5>Expériences professionnelles</h5>
+                        </div>
+                        <div class="card-body">
+                            <div id="experiences-container">
+                                <div class="experience-item mb-3 p-2 border rounded">
+                                    <div class="mb-2">
+                                        <label class="form-label">Poste</label>
+                                        <input type="text" class="form-control" placeholder="Ex: Développeur Web">
+                                    </div>
+                                    <div class="mb-2">
+                                        <label class="form-label">Entreprise</label>
+                                        <input type="text" class="form-control" placeholder="Ex: Google">
+                                    </div>
+                                    <div class="row mb-2">
+                                        <div class="col-md-6">
+                                            <label class="form-label">Date de début</label>
+                                            <input type="month" class="form-control">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Date de fin</label>
+                                            <input type="month" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="mb-2">
+                                        <label class="form-label">Description</label>
+                                        <textarea class="form-control" rows="2" placeholder="Décrivez vos responsabilités et réalisations"></textarea>
+                                    </div>
+                                    <button class="btn btn-sm btn-danger remove-experience"><i class="fas fa-times"></i> Supprimer</button>
+                                </div>
+                            </div>
+                            <button class="btn btn-sm btn-primary mt-2" id="add-experience"><i class="fas fa-plus"></i> Ajouter une expérience</button>
+                        </div>
+                    </div>
+                    
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5>Formation</h5>
+                        </div>
+                        <div class="card-body">
+                            <div id="education-container">
+                                <div class="education-item mb-3 p-2 border rounded">
+                                    <div class="mb-2">
+                                        <label class="form-label">Diplôme</label>
+                                        <input type="text" class="form-control" placeholder="Ex: Licence en Informatique">
+                                    </div>
+                                    <div class="mb-2">
+                                        <label class="form-label">Établissement</label>
+                                        <input type="text" class="form-control" placeholder="Ex: Université Paris-Saclay">
+                                    </div>
+                                    <div class="row mb-2">
+                                        <div class="col-md-6">
+                                            <label class="form-label">Date d'obtention</label>
+                                            <input type="month" class="form-control">
+                                        </div>
+                                    </div>
+                                    <button class="btn btn-sm btn-danger remove-education"><i class="fas fa-times"></i> Supprimer</button>
+                                </div>
+                            </div>
+                            <button class="btn btn-sm btn-primary mt-2" id="add-education"><i class="fas fa-plus"></i> Ajouter une formation</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-4">
+                <button class="btn btn-primary btn-lg" id="generate-cv"><i class="fas fa-file-download"></i> Générer le CV</button>
+            </div>
+            
+            <div class="cv-preview mt-4" id="cv-preview">
+                <div class="cv-header">
+                    <img src="" class="cv-photo" id="cv-preview-photo" style="display: none;">
+                    <h2 id="cv-preview-name">Votre nom complet</h2>
+                    <h4 id="cv-preview-title">Titre professionnel</h4>
+                    <p>
+                        <span id="cv-preview-email">email@exemple.com</span> • 
+                        <span id="cv-preview-phone">+33 1 23 45 67 89</span> • 
+                        <span id="cv-preview-address">Adresse</span>
+                    </p>
+                </div>
+                
+                <div class="cv-section">
+                    <h3 class="cv-section-title">Compétences</h3>
+                    <div id="cv-preview-skills">
+                        <p>Vos compétences apparaîtront ici</p>
+                    </div>
+                </div>
+                
+                <div class="cv-section">
+                    <h3 class="cv-section-title">Expérience professionnelle</h3>
+                    <div id="cv-preview-experiences">
+                        <p>Vos expériences professionnelles apparaîtront ici</p>
+                    </div>
+                </div>
+                
+                <div class="cv-section">
+                    <h3 class="cv-section-title">Formation</h3>
+                    <div id="cv-preview-education">
+                        <p>Vos formations apparaîtront ici</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section Connexion -->
+        <div id="loginSection" class="section">
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header text-center">
+                            <h3>Connexion</h3>
+                        </div>
+                        <div class="card-body">
+                            <form id="loginForm">
+                                <div class="mb-3">
+                                    <label for="loginEmail" class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="loginEmail" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="loginPassword" class="form-label">Mot de passe</label>
+                                    <input type="password" class="form-control" id="loginPassword" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100">Se connecter</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section Galerie -->
+        <div id="gallerySection" class="section">
+            <h2 class="text-center mb-4">Mes images</h2>
+            <div class="text-center mb-4">
+                <button class="btn btn-primary" onclick="showSection('home')">
+                    <i class="fas fa-plus"></i> Nouvelle image
+                </button>
+            </div>
+            <div class="alert alert-info text-center">
+                <i class="fas fa-info-circle me-2"></i> Connectez-vous pour accéder à votre galerie d'images
+            </div>
+        </div>
+        
+        <!-- Section Compresseur -->
+        <div id="compressor" class="section">
+            <h2 class="text-center mb-4">Compresseur d'images</h2>
+            <div class="alert alert-info text-center">
+                <i class="fas fa-info-circle me-2"></i> Cette fonctionnalité sera bientôt disponible
+            </div>
+        </div>
+        
+        <!-- Section Générateur de Logo -->
+        <div id="logo-generator" class="section">
+            <h2 class="text-center mb-4">Générateur de Logo</h2>
+            <div class="alert alert-info text-center">
+                <i class="fas fa-info-circle me-2"></i> Cette fonctionnalité sera bientôt disponible
+            </div>
+        </div>
+    </div>
+
+    <footer class="text-center text-white mt-5 py-3">
+        <p>© 2025 Gis Community System - Tous droits réservés</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Gestion de l'état de l'application
+        const appState = {
+            currentUser: null,
+            users: JSON.parse(localStorage.getItem('gclean_users')) || [],
+            images: JSON.parse(localStorage.getItem('gclean_images')) || [],
+            currentImage: null,
+            cvTheme: 'classic'
+        };
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuthState();
+            initEventListeners();
+            initCVGenerator();
+        });
+
+        // Vérification de l'état d'authentification
+        function checkAuthState() {
+            const currentUser = JSON.parse(localStorage.getItem('gclean_current_user'));
+            if (currentUser) {
+                appState.currentUser = currentUser;
+                updateUIForAuthState(true);
+            } else {
+                updateUIForAuthState(false);
+            }
+        }
+
+        // Mise à jour de l'UI en fonction de l'état d'authentification
+        function updateUIForAuthState(isLoggedIn) {
+            const userMenu = document.getElementById('userMenu');
+            
+            if (isLoggedIn) {
+                userMenu.innerHTML = `
+                    <span class="me-2">Bonjour, ${appState.currentUser.name}</span>
+                    <button class="btn btn-outline-secondary btn-sm" onclick="logout()">
+                        <i class="fas fa-sign-out-alt me-1"></i> Déconnexion
+                    </button>
+                `;
+            } else {
+                userMenu.innerHTML = `
+                    <button class="btn btn-outline-primary btn-sm" onclick="showSection('login')">
+                        <i class="fas fa-user me-1"></i> Connexion
+                    </button>
+                `;
+            }
+        }
+
+        // Navigation entre les sections
+        function showSection(sectionId) {
+            // Masquer toutes les sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active-section');
+            });
+            
+            // Afficher la section demandée
+            document.getElementById(sectionId + 'Section').classList.add('active-section');
+            
+            // Si l'utilisateur n'est pas connecté et essaie d'accéder à la galerie
+            if (sectionId === 'gallery' && !appState.currentUser) {
+                showNotification('Veuillez vous connecter pour accéder à vos images', true);
+                showSection('login');
+            }
+        }
+
+        // Initialisation des écouteurs d'événements
+        function initEventListeners() {
+            // Événements d'authentification
+            document.getElementById('loginForm').addEventListener('submit', handleLogin);
+            
+            // Événements de téléchargement d'image
+            document.getElementById('fileInput').addEventListener('change', handleFileSelect);
+            document.getElementById('pasteBtn').addEventListener('click', handlePaste);
+            document.getElementById('urlBtn').addEventListener('click', toggleUrlInput);
+            document.getElementById('loadUrlBtn').addEventListener('click', handleUrlLoad);
+            
+            // Événements d'édition d'image
+            document.getElementById('changeBgBtn').addEventListener('click', toggleBackgroundOptions);
+            document.getElementById('editBtn').addEventListener('click', toggleEditOptions);
+            
+            // Événements des boutons de transformation
+            document.getElementById('rotateLeftBtn').addEventListener('click', rotateLeft);
+            document.getElementById('rotateRightBtn').addEventListener('click', rotateRight);
+            
+            // Événements des options d'arrière-plan
+            document.querySelectorAll('.bg-option').forEach(option => {
+                option.addEventListener('click', changeBackground);
+            });
+            document.getElementById('colorPicker').addEventListener('input', changeBackgroundColor);
+            document.getElementById('customBg').addEventListener('change', handleCustomBackground);
+            
+            // Événements des boutons d'action
+            document.getElementById('finalDownloadBtn').addEventListener('click', downloadImage);
+            document.getElementById('saveToAccountBtn').addEventListener('click', saveToAccount);
+        }
+
+        // Initialisation du générateur de CV
+        function initCVGenerator() {
+            // Événements pour le générateur de CV
+            document.querySelectorAll('.theme-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    appState.cvTheme = this.getAttribute('data-theme');
+                    updateCVPreview();
+                });
+            });
+            
+            // Événements pour les champs du CV
+            const cvFields = ['cvName', 'cvTitle', 'cvEmail', 'cvPhone', 'cvAddress'];
+            cvFields.forEach(field => {
+                document.getElementById(field).addEventListener('input', updateCVPreview);
+            });
+            
+            // Photo de CV
+            document.getElementById('cvPhoto').addEventListener('change', function(e) {
+                if (e.target.files.length) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        document.getElementById('cv-preview-photo').src = event.target.result;
+                        document.getElementById('cv-preview-photo').style.display = 'block';
+                    };
+                    reader.readAsDataURL(e.target.files[0]);
+                }
+            });
+            
+            // Ajout de compétences
+            document.getElementById('add-skill').addEventListener('click', function() {
+                const skillsContainer = document.getElementById('skills-container');
+                const newSkill = document.createElement('div');
+                newSkill.className = 'skill-item mb-2';
+                newSkill.innerHTML = `
+                    <div class="input-group">
+                        <input type="text" class="form-control skill-name" placeholder="Compétence">
+                        <input type="number" class="form-control skill-level" placeholder="Niveau (0-100)" min="0" max="100">
+                        <button class="btn btn-danger remove-skill"><i class="fas fa-times"></i></button>
+                    </div>
+                `;
+                skillsContainer.appendChild(newSkill);
+                
+                // Événement pour la suppression
+                newSkill.querySelector('.remove-skill').addEventListener('click', function() {
+                    newSkill.remove();
+                    updateCVPreview();
+                });
+                
+                // Événements pour la mise à jour
+                newSkill.querySelectorAll('input').forEach(input => {
+                    input.addEventListener('input', updateCVPreview);
+                });
+            });
+            
+            // Génération du CV
+            document.getElementById('generate-cv').addEventListener('click', generateCV);
+        }
+
+        // Gestionnaires d'événements d'authentification
+        function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            const user = appState.users.find(u => u.email === email && u.password === password);
+            
+            if (user) {
+                appState.currentUser = user;
+                localStorage.setItem('gclean_current_user', JSON.stringify(user));
+                updateUIForAuthState(true);
+                showSection('home');
+                showNotification('Connexion réussie!', false);
+            } else {
+                showNotification('Email ou mot de passe incorrect', true);
+            }
+        }
+
+        function logout() {
+            appState.currentUser = null;
+            localStorage.removeItem('gclean_current_user');
+            updateUIForAuthState(false);
+            showSection('home');
+            showNotification('Déconnexion réussie', false);
+        }
+
+        // Gestionnaires d'événements d'image
+        function handleFileSelect(e) {
+            if (e.target.files.length) {
+                processImage(e.target.files[0]);
+            }
+        }
+
+        function handlePaste() {
+            showNotification('Appuyez sur Ctrl+V (Cmd+V sur Mac) pour coller une image', false);
+        }
+
+        function toggleUrlInput() {
+            const urlContainer = document.getElementById('urlInputContainer');
+            urlContainer.style.display = urlContainer.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function handleUrlLoad() {
+            const url = document.getElementById('imageUrl').value.trim();
+            if (!url) {
+                showNotification('Veuillez entrer une URL valide', true);
+                return;
+            }
+            
+            // Pour des raisons de sécurité, cette fonctionnalité nécessiterait un backend
+            showNotification('Cette fonctionnalité nécessite un backend pour fonctionner', true);
+        }
+
+        // Fonction pour traiter l'image avec l'API Remove.bg
+        async function processImage(imageFile) {
+            document.getElementById('loading').style.display = 'block';
+            
+            const originalUrl = URL.createObjectURL(imageFile);
+            document.getElementById('originalImage').innerHTML = `<img src="${originalUrl}" alt="Original Image" />`;
+
+            // Utilisation de l'API Remove.bg
+            const apiKey = '4rmNvKwmFz9rrC4zih2zkvQK'; // Remplacez par votre clé API réelle
+            const formData = new FormData();
+            formData.append('image_file', imageFile);
+            formData.append('size', 'auto');
+            
+            try {
+                const response = await fetch('https://api.remove.bg/v1.0/removebg', {
+                    method: 'POST',
+                    headers: {
+                        'X-Api-Key': apiKey,
+                    },
+                    body: formData,
+                });
+        
+                if (!response.ok) {
+                    throw new Error('Erreur lors du traitement de l\'image.');
+                }
+        
+                const blob = await response.blob();
+                const processedUrl = URL.createObjectURL(blob);
+                document.getElementById('processedImage').innerHTML = `<img src="${processedUrl}" alt="Processed Image" />`;
+                
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('resultsSection').style.display = 'block';
+                
+                // Sauvegarder l'image actuelle
+                appState.currentImage = {
+                    original: originalUrl,
+                    processed: processedUrl,
+                    file: imageFile
+                };
+                
+                showNotification('Image traitée avec succès!', false);
+            } catch (error) {
+                document.getElementById('loading').style.display = 'none';
+                showNotification('Erreur: ' + error.message, true);
+                console.error('Erreur API:', error);
+                
+                // En cas d'erreur, utiliser une image de démonstration
+                const processedUrl = originalUrl;
+                document.getElementById('processedImage').innerHTML = `<img src="${processedUrl}" alt="Processed Image" />`;
+                document.getElementById('resultsSection').style.display = 'block';
+                appState.currentImage = {
+                    original: originalUrl,
+                    processed: processedUrl,
+                    file: imageFile
+                };
+            }
+        }
+
+        // Fonctions d'édition d'image
+        function toggleBackgroundOptions() {
+            const options = document.getElementById('backgroundOptions');
+            options.style.display = options.style.display === 'none' ? 'block' : 'none';
+            document.getElementById('editOptions').style.display = 'none';
+        }
+
+        function toggleEditOptions() {
+            const options = document.getElementById('editOptions');
+            options.style.display = options.style.display === 'none' ? 'block' : 'none';
+            document.getElementById('backgroundOptions').style.display = 'none';
+        }
+
+        function rotateLeft() {
+            // Implémentation de la rotation vers la gauche
+            showNotification('Rotation appliquée', false);
+        }
+
+        function rotateRight() {
+            // Implémentation de la rotation vers la droite
+            showNotification('Rotation appliquée', false);
+        }
+
+        function changeBackground(e) {
+            const color = e.target.getAttribute('data-color');
+            const gradient = e.target.getAttribute('data-gradient');
+            
+            // Appliquer l'arrière-plan
+            const processedImage = document.getElementById('processedImage');
+            if (gradient) {
+                processedImage.style.background = `linear-gradient(${gradient})`;
+            } else {
+                processedImage.style.background = color;
+            }
+            
+            showNotification('Arrière-plan modifié', false);
+        }
+
+        function changeBackgroundColor(e) {
+            const color = e.target.value;
+            document.getElementById('processedImage').style.background = color;
+            showNotification('Couleur d\'arrière-plan modifiée', false);
+        }
+
+        function handleCustomBackground(e) {
+            if (e.target.files.length) {
+                const file = e.target.files[0];
+                const url = URL.createObjectURL(file);
+                document.getElementById('processedImage').style.backgroundImage = `url(${url})`;
+                showNotification('Image d\'arrière-plan appliquée', false);
+            }
+        }
+
+        // Fonctions de gestion d'image
+        function downloadImage() {
+            if (!appState.currentImage) {
+                showNotification('Aucune image à télécharger', true);
+                return;
+            }
+            
+            // Créer un lien de téléchargement
+            const link = document.createElement('a');
+            link.href = appState.currentImage.processed;
+            link.download = 'image-modifiee.png';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            showNotification('Image téléchargée avec succès!', false);
+        }
+
+        function saveToAccount() {
+            if (!appState.currentUser) {
+                showNotification('Veuillez vous connecter pour sauvegarder l\'image', true);
+                showSection('login');
+                return;
+            }
+            
+            if (!appState.currentImage) {
+                showNotification('Aucune image à sauvegarder', true);
+                return;
+            }
+            
+            const newImage = {
+                id: Date.now().toString(),
+                userId: appState.currentUser.id,
+                name: 'Image édité',
+                preview: appState.currentImage.processed,
+                original: appState.currentImage.original,
+                createdAt: new Date().toISOString()
+            };
+            
+            appState.images.push(newImage);
+            localStorage.setItem('gclean_images', JSON.stringify(appState.images));
+            
+            showNotification('Image sauvegardée dans votre compte!', false);
+        }
+
+        // Fonctions pour le générateur de CV
+        function updateCVPreview() {
+            // Mettre à jour les informations personnelles
+            document.getElementById('cv-preview-name').textContent = document.getElementById('cvName').value || 'Votre nom complet';
+            document.getElementById('cv-preview-title').textContent = document.getElementById('cvTitle').value || 'Titre professionnel';
+            document.getElementById('cv-preview-email').textContent = document.getElementById('cvEmail').value || 'email@exemple.com';
+            document.getElementById('cv-preview-phone').textContent = document.getElementById('cvPhone').value || '+33 1 23 45 67 89';
+            document.getElementById('cv-preview-address').textContent = document.getElementById('cvAddress').value || 'Adresse';
+            
+            // Mettre à jour les compétences
+            const skillsContainer = document.getElementById('cv-preview-skills');
+            skillsContainer.innerHTML = '';
+            
+            const skillItems = document.querySelectorAll('.skill-item');
+            if (skillItems.length === 0) {
+                skillsContainer.innerHTML = '<p>Vos compétences apparaîtront ici</p>';
+            } else {
+                skillItems.forEach(item => {
+                    const skillName = item.querySelector('.skill-name').value;
+                    const skillLevel = item.querySelector('.skill-level').value;
+                    
+                    if (skillName) {
+                        const skillElement = document.createElement('div');
+                        skillElement.className = 'mb-2';
+                        skillElement.innerHTML = `
+                            <strong>${skillName}</strong>
+                            <div class="progress">
+                                <div class="progress-bar" role="progressbar" style="width: ${skillLevel}%;" 
+                                    aria-valuenow="${skillLevel}" aria-valuemin="0" aria-valuemax="100">
+                                    ${skillLevel}%
+                                </div>
+                            </div>
+                        `;
+                        skillsContainer.appendChild(skillElement);
+                    }
+                });
+            }
+            
+            // Appliquer le thème sélectionné
+            document.getElementById('cv-preview').className = `cv-preview mt-4 theme-${appState.cvTheme}`;
+        }
+
+        function generateCV() {
+            // Ici, vous implémenteriez la génération et le téléchargement du CV
+            // Pour l'instant, nous affichons simplement une notification
+            showNotification('CV généré avec succès!', false);
+            
+            // Dans une implémentation réelle, vous utiliseriez une bibliothèque comme jsPDF
+            // pour générer un PDF ou html2canvas pour créer une image du CV
+        }
+
+        // Fonction d'affichage des notifications
+        function showNotification(message, isError) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = isError ? 'notification error' : 'notification';
+            notification.style.display = 'block';
+            
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
